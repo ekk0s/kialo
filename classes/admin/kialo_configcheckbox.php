@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,48 +12,56 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace mod_kialo\admin;
 
 use admin_setting_configcheckbox;
 
 /**
- * Extends moodle's built-in admin checkbox, allowing us to make it read-only.
+ * Extends Moodle's built‑in admin checkbox setting, allowing it to be rendered read‑only.
+ *
+ * This class mirrors the implementation in the official Kialo plugin. It provides
+ * a `force_readonly` method which, when set to true, marks the checkbox as read‑only and
+ * prevents changes from being saved.
  *
  * @package    mod_kialo
+ * @category   admin
  * @copyright  2023 Kialo GmbH
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class kialo_configcheckbox extends admin_setting_configcheckbox {
     /**
-     * If set to true, the checkbox will be rendered as read-only.
+     * Flag indicating whether the checkbox should be rendered read‑only.
+     *
      * @var bool
      */
     protected $forcereadonly = false;
 
     /**
-     * Set the forcereadonly setting - if true, the checkbox will be rendered as read-only.
+     * Set whether the checkbox should be rendered read‑only.
+     *
+     * When set to true, the checkbox will be displayed as disabled and its
+     * value will not be saved. It will remain set to its default value.
+     *
      * @param bool $forcereadonly
      * @return void
      */
     public function force_readonly(bool $forcereadonly) {
         $this->forcereadonly = $forcereadonly;
-
-        // If the checkbox is read-only, it should not be saved. It would be reset to its default otherwise when saving.
+        // If read‑only, do not save value; otherwise it will be reset to default.
         $this->nosave = $forcereadonly;
     }
 
     /**
-     * Usually a checkbox is only rendered as read-only if the plugin setting is overriden in config.php.
-     * This class allows controlling this independently.
-     * @return bool
+     * Overrides parent to honor the `forcereadonly` flag.
+     *
+     * @return bool True if the checkbox should be read‑only, false otherwise.
      */
     public function is_readonly(): bool {
         if ($this->forcereadonly) {
             return true;
         }
-
         return parent::is_readonly();
     }
 }
